@@ -1,3 +1,4 @@
+#inspired by @grutt 
 from flask import Flask, request, abort
 import os
 import subprocess
@@ -19,7 +20,7 @@ def numColors():
             filename = img.split('/')[-1]             
             local = "imgs/"+filename             
             urllib.request.urlretrieve(img, local)             
-            colors = subprocess.run(["identify", "-format", "%k", local], stdout=subprocess.PIPE)
+            colors = subprocess.run(["/usr/bin/identify", "-format", "%k", local], stdout=subprocess.PIPE)
 
             if(colors.returncode == 0):
                 return colors.stdout
