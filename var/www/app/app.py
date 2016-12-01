@@ -1,4 +1,5 @@
-#inspired by @grutt 
+#inspired by @grutt
+
 from flask import Flask, request, abort
 import os
 import subprocess
@@ -14,20 +15,22 @@ def index():
 def numColors():
     img = request.args.get('src')
     if img is None or img == "":
-        abort(500)
+        return "Image has no name!"
     else:
-        try:
-            filename = img.split('/')[-1]             
-            local = "imgs/"+filename             
-            urllib.request.urlretrieve(img, local)             
-            colors = subprocess.run(["/usr/bin/identify", "-format", "%k", local], stdout=subprocess.PIPE)
-
-            if(colors.returncode == 0):
-                return colors.stdout
-            else:
-                abort(500)
+	filename = img.split('/')[-1]
+        local = "/var/www/app/imgs/"+filename
+        urllib.urlretrieve(img, local)
+	colors = ""
+	try:
+            colors = subprocess.check_output(["/usr/bin/identify", "-format", "%k", local])
         except:
-            abort(500)
+            return "Imagemagick failed"
+        #if(colors.returncode == 0):
+         #   return colors.stdout
+        #else:
+         #   return "Still not working"
+        return colors
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
